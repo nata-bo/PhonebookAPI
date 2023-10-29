@@ -82,7 +82,7 @@ public class DeleteContactOkhttpTests {
     @Test
     public void deleteContactByWrongIDNegativeTest() throws IOException {
         Request request = new Request.Builder()
-                .url("https://contactapp-telran-backend.herokuapp.com/v1/contacts/" + "1"+id)
+                .url("https://contactapp-telran-backend.herokuapp.com/v1/contacts/" + 1+id)
                 .delete()
                 .addHeader("Authorization", token)
                 .build();
@@ -91,7 +91,7 @@ public class DeleteContactOkhttpTests {
         Assert.assertEquals(response.code(), 400);
         MessageDto messageDto = gson.fromJson(response.body().string(), MessageDto.class);
         System.out.println(messageDto.getMessage());
-         Assert.assertEquals(messageDto.getMessage(), "Contact with id: "+"1"+id +" not found in your contacts!");
+         Assert.assertEquals(messageDto.getMessage(), "Contact with id: "+1+id +" not found in your contacts!");
     }
 
 
