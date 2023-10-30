@@ -1,6 +1,7 @@
 package com.ait.tests.okhttp;
 
 import com.ait.dto.ContactDto;
+import com.ait.dto.ErrorDto;
 import com.ait.dto.GetAllContactsDto;
 import com.ait.dto.MessageDto;
 import com.google.gson.Gson;
@@ -44,7 +45,7 @@ public class GetAllContactsOkhttpTests {
    }
 
     @Test
-    public void getAllContactsNegativeTest() throws IOException {
+    public void getAllContactsWithWrongTokenTest() throws IOException {
         Request request = new Request.Builder()
                 .url("https://contactapp-telran-backend.herokuapp.com/v1/contacts")
                 .get()
@@ -52,9 +53,11 @@ public class GetAllContactsOkhttpTests {
                 .build();
 
         Response response = client.newCall(request).execute();
+        Assert.assertFalse(response.isSuccessful());
         Assert.assertEquals(response.code(), 401);
-        MessageDto messageDto = gson.fromJson(response.body().string(), MessageDto.class);
-        //Assert.assertEquals(messageDto.getMessage(), "Unauthorized");
+        ErrorDto errorDto = gson.fromJson(response.body().string(), ErrorDto.class);
+        Assert.assertEquals(errorDto.getError(), "Unauthorized");
+        System.out.println(errorDto.getError());
     }
 
 }

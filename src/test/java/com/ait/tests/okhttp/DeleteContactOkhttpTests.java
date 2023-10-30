@@ -1,6 +1,7 @@
 package com.ait.tests.okhttp;
 
 import com.ait.dto.ContactDto;
+import com.ait.dto.ErrorDto;
 import com.ait.dto.MessageDto;
 import com.google.gson.Gson;
 import okhttp3.*;
@@ -65,7 +66,7 @@ public class DeleteContactOkhttpTests {
      }
 
     @Test
-    public void deleteContactByIDUnauthorizedNegativeTest() throws IOException {
+    public void deleteContactByIDWrongTokenNegativeTest() throws IOException {
         Request request = new Request.Builder()
                 .url("https://contactapp-telran-backend.herokuapp.com/v1/contacts/" + id)
                 .delete()
@@ -74,9 +75,9 @@ public class DeleteContactOkhttpTests {
 
         Response response = client.newCall(request).execute();
         Assert.assertEquals(response.code(), 401);
-        MessageDto messageDto = gson.fromJson(response.body().string(), MessageDto.class);
-        System.out.println(messageDto.getMessage());
-        // Assert.assertEquals(messageDto.getMessage(), "Unauthorized");
+        ErrorDto errorDto = gson.fromJson(response.body().string(), ErrorDto.class);
+        System.out.println(errorDto.getError());
+         Assert.assertEquals(errorDto.getError(), "Unauthorized");
     }
 
     @Test
@@ -89,9 +90,13 @@ public class DeleteContactOkhttpTests {
 
         Response response = client.newCall(request).execute();
         Assert.assertEquals(response.code(), 400);
-        MessageDto messageDto = gson.fromJson(response.body().string(), MessageDto.class);
-        System.out.println(messageDto.getMessage());
-         Assert.assertEquals(messageDto.getMessage(), "Contact with id: "+1+id +" not found in your contacts!");
+        ErrorDto  errorDto = gson.fromJson(response.body().string(), ErrorDto.class);
+        System.out.println(errorDto.getError());
+        Assert.assertEquals(errorDto.getError(), "Bad Request");
+        System.out.println(errorDto.getMessage());
+        Assert.assertEquals(errorDto.getMessage(), "Contact with id: "+1+id +" not found in your contacts!");
+
+
     }
 
 
